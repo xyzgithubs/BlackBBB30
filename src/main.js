@@ -5,9 +5,10 @@ import App from './App.vue'
 // 导入公共样式
 import './assets/statics/site/css/style.css'
 
-// 导入组件
+// 导入首页组件
 import index from './components/index.vue'
-
+// 导入详情组件
+import detail from './components/detail.vue'
 
 //导入router 
 import VueRouter from 'vue-router'
@@ -26,6 +27,9 @@ Vue.use(VueRouter)
 const routes = [
   {
     path:'/index',component:index
+  },
+  {
+    path:'/detail/:id',component:detail
   }
 ]
 
