@@ -2,6 +2,16 @@ import Vue from 'vue'
 import App from './App.vue'
 
 
+
+//设置axios 到原型上 方便共享
+import axios from 'axios'
+Vue.prototype.$axios = axios;
+
+//设置axios的基地址
+axios.defaults.baseURL = 'http://111.230.232.110:8899';
+
+
+
 // 导入公共样式
 import './assets/statics/site/css/style.css'
 
@@ -25,6 +35,11 @@ Vue.use(VueRouter)
 
 //写规则
 const routes = [
+  {
+    //重定向
+    path:"/",
+    redirect:'/index'
+  },
   {
     path:'/index',component:index
   },
