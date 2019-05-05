@@ -24,43 +24,9 @@ Vue.filter('globalFormatTime', function(value, fmtTemplate) {
   }
 })
 
+//导入抽取的路由
 
-// 导入公共样式
-import './assets/statics/site/css/style.css'
-
-// 导入首页组件
-import index from './components/index.vue'
-// 导入详情组件
-import detail from './components/detail.vue'
-
-//导入router 
-import VueRouter from 'vue-router'
-
-//导入饿了么ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
-
-
-// vue.use
-Vue.use(VueRouter)
-
-//写规则
-const routes = [
-  {
-    path:'/index',component:index
-  },
-  {
-    path:'/detail/:id',component:detail
-  }
-]
-
-//实例化路由对象
-const router = new VueRouter({
-    routes
-})
-
+import router from './router.js'
 
 Vue.config.productionTip = false
 
