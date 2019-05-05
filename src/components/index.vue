@@ -124,7 +124,10 @@
                   <img :src="item.img_url">
                 </div>
                 <div class="txt-box">
-                  <a href="/goods/show-98.html">{{item.title}}</a>
+                  <router-link :to="'/detail/'+item.id">{{item.title}}</router-link>
+                  <!-- <a href="/goods/show-98.html"> -->
+                  
+                  <!-- </a> -->
                   <span>{{item.add_time | formatTime}}</span>
                 </div>
               </li>
@@ -200,7 +203,7 @@ export default {
   //数据获取
   created() {
     axios
-      .get("http://111.230.232.110:8899/site/goods/gettopdata/goods")
+      .get("/site/goods/gettopdata/goods")
       .then(res => {
         console.log(res);
         this.catelist = res.data.message.catelist;
@@ -209,19 +212,29 @@ export default {
       });
 
       // 底部数据
-      axios.get("http://111.230.232.110:8899/site/goods/getgoodsgroup").then(res=>{
+      axios.get("/site/goods/getgoodsgroup").then(res=>{
         console.log(res);
         this.sectionList = res.data.message;
       })
   },
-  //过滤器
-  filters: {
-    formatTime(value) {
-      // return value.split('T')[0]
-      // 使用moment处理
-      return moment(value).format("YYYY年MM月DD日");
-    }
-  }
+  // //过滤器
+  // filters: {
+  //   formatTime(value) {
+  //     // return value.split('T')[0]
+  //     // 使用moment处理
+  //     return moment(value).format("YYYY年MM月DD日");
+  //   }
+  // },
+  //侦听器
+    watch:{
+        "$route.params.id"(nw){
+            this.$axios.get(`/site/goods/getgoodsinfo/${nw}`).then(res=>{
+                this.goodsinfo = res.data.message.goodsinfo;
+                this.hotgoodslist = res.data.message.hotgoodslist;
+                this.imglist = res.data.message.imglist;
+            })
+        }
+    },
 };
 </script>
 

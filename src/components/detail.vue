@@ -14,11 +14,11 @@
           <div class="left-925">
             <div class="goods-box clearfix">
               <div class="pic-box">
-            <el-carousel height="312px">
-        <el-carousel-item v-for="item in imglist" :key="item.id" class="slider-img">
-        <img :src="item.thumb_path" alt="">
-      </el-carousel-item>
-    </el-carousel>
+                <el-carousel height="312px">
+                  <el-carousel-item v-for="item in imglist" :key="item.id" class="slider-img">
+                    <img :src="item.thumb_path" alt>
+                  </el-carousel-item>
+                </el-carousel>
               </div>
               <div class="goods-spec">
                 <h1>{{goodsinfo.title}}</h1>
@@ -46,35 +46,13 @@
                     <dt>购买数量</dt>
                     <dd>
                       <div class="stock-box">
-                        <div class="el-input-number el-input-number--small">
-                          <span role="button" class="el-input-number__decrease is-disabled">
-                            <i class="el-icon-minus"></i>
-                          </span>
-                          <span role="button" class="el-input-number__increase">
-                            <i class="el-icon-plus"></i>
-                          </span>
-                          <div class="el-input el-input--small">
-                            <!---->
-                            <input
-                              autocomplete="off"
-                              size="small"
-                              type="text"
-                              rows="2"
-                              max="60"
-                              min="1"
-                              validateevent="true"
-                              class="el-input__inner"
-                              role="spinbutton"
-                              aria-valuemax="60"
-                              aria-valuemin="1"
-                              aria-valuenow="1"
-                              aria-disabled="false"
-                            >
-                            <!---->
-                            <!---->
-                            <!---->
-                          </div>
-                        </div>
+                        <el-input-number
+                          v-model="num"
+                          @change="handleChange"
+                          :min="1"
+                          :max="goodsinfo.stock_quantity"
+                          label="描述文字"
+                        ></el-input-number>
                       </div>
                       <span class="stock-txt">
                         库存
@@ -126,7 +104,6 @@
                           data-type="*10-1000"
                           nullmsg="请填写评论内容！"
                           v-model="comment"
-                          
                         ></textarea>
                         <span class="Validform_checktip"></span>
                       </div>
@@ -161,18 +138,18 @@
                     </li>
                   </ul>
                   <div class="page-box" style="margin: 5px 0px 0px 62px;">
-                    <div id="pagination" class="digg">   
-                                   <!-- element -->
+                    <div id="pagination" class="digg">
+                      <!-- element -->
                       <span class="demonstration">完整功能</span>
-                    <el-pagination
-                      @size-change="handleSizeChange"
-                      @current-change="handleCurrentChange"
-                      :current-page="pageIndex"
-                      :page-sizes="[5, 10, 15, 20]"
-                      :page-size="pageSize"
-                      layout="total, sizes, prev, pager, next, jumper"
-                      :total="totalcount">
-                    </el-pagination>
+                      <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageIndex"
+                        :page-sizes="[5, 10, 15, 20]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalcount"
+                      ></el-pagination>
                     </div>
                   </div>
                 </div>
@@ -186,12 +163,17 @@
                 <ul class="side-img-list">
                   <li v-for="(item, index) in hotgoodslist " :key="index">
                     <div class="img-box">
-                      <a href="#/site/goodsinfo/90" >
+                      <!-- <a href="#/site/goodsinfo/90"> -->
+                      <router-link :to="'/detail/'+item.id">
                         <img :src="item.img_url">
-                      </a>
+                      <!-- </a> -->
+                      </router-link>
                     </div>
                     <div class="txt-box">
-                      <a href="#/site/goodsinfo/90" class>{{item.title}}</a>
+
+                      <!-- <a href="#/site/goodsinfo/90" class> -->
+                      <router-link :to="'/detail/'+item.id">{{item.title}}</router-link>
+                      <!-- </a> -->
                       <span>{{item.add_time | formatTime }}</span>
                     </div>
                   </li>
@@ -219,98 +201,120 @@ export default {
       // 商品详情
       goodsinfo: {},
       // 热卖
-      hotgoodslist:[],
+      hotgoodslist: [],
       // 图片
       imglist: [],
       // tab栏索引
       index: 1,
       //输入的内容
-      comment:'',
+      comment: "",
 
       //页码
-      pageIndex:1,
+      pageIndex: 1,
       //页容量
-      pageSize:10,
+      pageSize: 10,
 
       //总评论数
-      totalcount:0,
+      totalcount: 0,
 
       //评论的数组
-      commentList:[]
+      commentList: [],
+
+      //购买数量
+      num:1,
     };
   },
- methods: {
-    postComment(){
-    if(this.comment===''){
-       this.$message.error("非法输入!!!");
-    }else{
+  methods: {
+
+        handleChange(value) {
+        console.log(value);
+      },
+    postComment() {
+      if (this.comment === "") {
+        this.$message.error("非法输入!!!");
+      } else {
         // 成功调接口
-        this.$axios.post(`/site/validate/comment/post/goods/${this.$route.params.id}`,{
-            commenttxt:this.comment
-        }).then(res=>{
+        this.$axios
+          .post(`/site/validate/comment/post/goods/${this.$route.params.id}`, {
+            commenttxt: this.comment
+          })
+          .then(res => {
             // console.log(res);
-            if(res.data.status===0){
+            if (res.data.status === 0) {
               this.$message.success(res.data.message);
               //清空
-              this.comment = '';
+              this.comment = "";
               //重新渲染
-              this.getComment()
+              this.getComment();
               //并跳回第一页
-              this.pageIndex =1
+              this.pageIndex = 1;
             }
-            
-        })
-    }
- },
-
- getComment(){
-   //调接口
-   this.$axios.get(`site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`).then(res=>{
-     console.log(res);
-      this.totalcount = res.data.totalcount
-      this.commentList = res.data.message
-   })
- },
-      // element方法
-      // 页容量改变
-        handleSizeChange(size) {
-        console.log(size);
-        this.pageSize = size
-        //改变后重新渲染
-        this.getComment();
-      },
-      // 页码改变
-      handleCurrentChange(current) {
-        console.log(current);
-        this.pageIndex = current
-        //改变后重新渲染
-        this.getComment(); 
+          });
       }
     },
 
+    getComment() {
+      //调接口
+      this.$axios
+        .get(
+          `site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${
+            this.pageIndex
+          }&pageSize=${this.pageSize}`
+        )
+        .then(res => {
+          console.log(res);
+          this.totalcount = res.data.totalcount;
+          this.commentList = res.data.message;
+        });
+    },
+    // element方法
+    // 页容量改变
+    handleSizeChange(size) {
+      console.log(size);
+      this.pageSize = size;
+      //改变后重新渲染
+      this.getComment();
+    },
+    // 页码改变
+    handleCurrentChange(current) {
+      console.log(current);
+      this.pageIndex = current;
+      //改变后重新渲染
+      this.getComment();
+    },
+
+  
+
+
+  },
+    //侦听器
+    watch:{
+        "$route.params.id"(nw){
+            this.$axios.get(`/site/goods/getgoodsinfo/${nw}`).then(res=>{
+                this.goodsinfo = res.data.message.goodsinfo;
+                this.hotgoodslist = res.data.message.hotgoodslist;
+                this.imglist = res.data.message.imglist;
+            })
+        }
+    },
 
   created() {
     // console.log(this.route);
     // console.log(this.$route.params.id);
     // 获取数据  导入 axios
     this.$axios
-      .get(
-        `/site/goods/getgoodsinfo/${
-          this.$route.params.id
-        }`
-      )
+      .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
       .then(res => {
-        // console.log(res); 
+        // console.log(res);
         // 渲染this.
         this.goodsinfo = res.data.message.goodsinfo;
         this.hotgoodslist = res.data.message.hotgoodslist;
         this.imglist = res.data.message.imglist;
       });
 
-      //获取评论
-      this.getComment()
-
-  },
+    //获取评论
+    this.getComment();
+  }
   // //过滤器
   // filters: {
   //   formatTime(value) {
@@ -319,7 +323,6 @@ export default {
   //     return moment(value).format("YYYY年MM月DD日");
   //   }
   // },
-
 };
 </script>
 
@@ -329,9 +332,9 @@ export default {
   width: 100%;
 }
 .pic-box {
-    width: 320px;
+  width: 320px;
 }
-.pic-box img{
-    width: 100%;
+.pic-box img {
+  width: 100%;
 }
 </style>
