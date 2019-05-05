@@ -35,6 +35,10 @@ Vue.use(VueRouter)
 //写规则
 const routes = [
   {
+    path:'/',
+    redirect:'/index'
+  },
+  {
     path:'/index',component:index
   },
   {

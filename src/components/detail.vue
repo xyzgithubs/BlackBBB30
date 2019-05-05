@@ -13,7 +13,13 @@
         <div class="wrap-box">
           <div class="left-925">
             <div class="goods-box clearfix">
-              <div class="pic-box"></div>
+              <div class="pic-box">
+            <el-carousel height="312px">
+        <el-carousel-item v-for="item in imglist" :key="item.id" class="slider-img">
+        <img :src="item.thumb_path" alt="">
+      </el-carousel-item>
+    </el-carousel>
+              </div>
               <div class="goods-spec">
                 <h1>{{goodsinfo.title}}</h1>
                 <p class="subtitle">{{goodsinfo.sub_title}}</p>
@@ -148,7 +154,7 @@
                       <div class="inner-box">
                         <div class="info">
                           <span>{{item.user_name}}</span>
-                          <span>{{item.reply_time |globalFormatTime('YYYY-MM-DDTHH:mm:ss')}}</span>
+                          <span>{{item.reply_time |formatTime}}</span>
                         </div>
                         <p>{{item.content}}</p>
                       </div>
@@ -186,7 +192,7 @@
                     </div>
                     <div class="txt-box">
                       <a href="#/site/goodsinfo/90" class>{{item.title}}</a>
-                      <span>{{item.add_time | globalFormatTime('YYYY-MM-DD') }}</span>
+                      <span>{{item.add_time | formatTime }}</span>
                     </div>
                   </li>
                 </ul>
@@ -200,11 +206,11 @@
 </template>
 
 <script>
-// 导入axios
-import axios from "axios";
+// // 导入axios
+// import axios from "axios";
 
-//导入moment
-import moment from "moment";
+// //导入moment
+// import moment from "moment";
 
 export default {
   name: "detail",
@@ -239,7 +245,7 @@ export default {
        this.$message.error("非法输入!!!");
     }else{
         // 成功调接口
-        axios.post(`http://111.230.232.110:8899/site/validate/comment/post/goods/${this.$route.params.id}`,{
+        this.$axios.post(`/site/validate/comment/post/goods/${this.$route.params.id}`,{
             commenttxt:this.comment
         }).then(res=>{
             // console.log(res);
@@ -259,7 +265,7 @@ export default {
 
  getComment(){
    //调接口
-   axios.get(`http://111.230.232.110:8899/site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`).then(res=>{
+   this.$axios.get(`site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`).then(res=>{
      console.log(res);
       this.totalcount = res.data.totalcount
       this.commentList = res.data.message
@@ -287,9 +293,9 @@ export default {
     // console.log(this.route);
     // console.log(this.$route.params.id);
     // 获取数据  导入 axios
-    axios
+    this.$axios
       .get(
-        `http://111.230.232.110:8899/site/goods/getgoodsinfo/${
+        `/site/goods/getgoodsinfo/${
           this.$route.params.id
         }`
       )
@@ -321,5 +327,11 @@ export default {
 .tab-content img {
   display: block;
   width: 100%;
+}
+.pic-box {
+    width: 320px;
+}
+.pic-box img{
+    width: 100%;
 }
 </style>
